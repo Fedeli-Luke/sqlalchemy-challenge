@@ -4,9 +4,6 @@ import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
-from datetime import datetime
-import datetime as dt
- 
 
 # Set up database
 engine = create_engine("sqlite:///Resources/hawaii.sqlite")
