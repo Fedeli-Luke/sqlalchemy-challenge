@@ -13,21 +13,22 @@ Base.prepare(engine, reflect=True)
 
 
 # Assign the classes to the matching tables
-measurements = Base.classes.measurements
-stations = Base.classes.stations
+measurement = Base.classes.measurement
+station = Base.classes.station
 
 # Create app
 app = Flask(__name__)
 
 # Create the session
 session = Session(engine)
+
  
 @app.route("/")
 def home():
     print("Home Page")
-    """Listing of the available API routes"""
+    
     return (
-        f"Welcome to the Surf Up API<br>"
+        f"Welcome to my API<br>"
         f"Available Routes:<br>"
         f"/api/v1.0/precipitation<br>"
         f"/api/v1.0/stations<br>"
@@ -39,26 +40,18 @@ def home():
 @app.route("/api/v1.0/precipitation")
 def precipitation():
    
-    rain_results = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date >= "08-23-2016").all()
-
-    last_year_rain = list(np.ravel(rain_results))
-    
-    # Convert the query results from last year to a Dictionary using `date` as the key and `prcp` as the value 
-    """"last_year_rain = []
-    for result in results:
-        prcp_dict = {}
-        prcp_dict[Measurement.date] = prcp_dict[Measurement.prcp]
-        last_year_rain.append(prcp_dict)"""
-
-    # Return a json list of stations from the dataset.
-    return jsonify(last_year_rain)
+    session = Session(engine)
+    results = session.query(Measurement.date,Measurement.precipitation).all()
+    session.close()
+    precipitation_dict = dict(results)
+    return jsonify(precipitation_dict)
 
   
 @app.route("/api/v1.0/stations")
 def stations():
     
     # Return a json list of stations from the dataset.
-
+    session = Session(engine)
     stations_data = session.query(Station.station).all()
 
     return jsonify(stations_data)
